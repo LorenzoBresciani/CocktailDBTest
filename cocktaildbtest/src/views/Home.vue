@@ -55,7 +55,10 @@ export default {
    computed:{
 
      cocktailsLimit(){
-      return this.limit ? this.cocktails.slice(0,this.limit) : this.cocktails
+       if(this.cocktails)
+        return this.limit ? this.cocktails.slice(0,this.limit) : this.cocktails;
+
+      return [];
      },
 
     totaDrinksCounter(){
