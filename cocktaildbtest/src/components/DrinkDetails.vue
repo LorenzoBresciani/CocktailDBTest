@@ -35,7 +35,9 @@
     <div class="fourthRow">
         <div v-for="cocktail in cocktailsRandomSorter" :key='cocktail.idDrink' class="previewCard" @click="seeDrinkDetails(cocktail)">
           <img class='previewImg' :src="cocktail.strDrinkThumb + '\/preview'" width="310" height='310'>
-          <span>{{cocktail.strDrink}}</span>
+          <div class="caption">
+            <span>{{cocktail.strDrink}}</span>
+          </div>
         </div>
     </div>
   </div>
@@ -173,7 +175,8 @@ span{
 
 .fourthRow{
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  justify-content: center;
+  grid-template-columns: 310px 310px 310px 310px;
   grid-template-rows: 300px;
   gap: 40px 40px;
   padding: 0 40px;
@@ -199,6 +202,13 @@ ul{
 
 h2{
   margin-bottom: 31px;
+}
+
+.caption{
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  height:53px;
 }
 
 </style>
