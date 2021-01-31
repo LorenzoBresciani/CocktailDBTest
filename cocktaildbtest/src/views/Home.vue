@@ -99,13 +99,13 @@ export default {
 
   methods:{
     seeDrinkDetails(drink){
-      this.$router.push({name: 'DrinkDetails', params: {drinkName:drink.strDrink, drink: drink, cocktails: this.cocktails}})
+      this.$router.push({name: 'DrinkDetails', params: {drinkName:drink.strDrink, drinkId: drink.idDrink}})
     },
     searchDrink(){
       if(this.search !== "")
       {
-        this.$http.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?f=a')
-        .then(response => (this.cocktails = response.data.drinks.filter(drink => { return drink.strDrink.match(new RegExp(this.search, "i"))})))
+        this.$http.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=' + this.search)
+        .then(response => (this.cocktails = response.data.drinks))
       }
       else
        this.retrieveAllCocktails()
@@ -115,7 +115,7 @@ export default {
       this.retrieveAllCocktails();
     },
     retrieveAllCocktails(){
-      this.$http.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?f=a')
+      this.$http.get('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=')
         .then(response => (this.cocktails = response.data.drinks))
     }
   }
@@ -174,7 +174,6 @@ input {
 input,
 input::-webkit-input-placeholder {
     font-size: 24px;
-    /* line-height: 3; */
 }
 
 .body{

@@ -4,7 +4,7 @@
       <img class="logoHeader" src="./assets/cocktail-logo.png"/>
       <h2>Cocktail Time</h2>
     </div>
-    <router-view/>
+    <router-view :key="$route.path"/>
     <div class="footer">
       <span>@ 2020 CocktailTime  </span>
       <span>Powered by www.thecocktaildb.com</span>

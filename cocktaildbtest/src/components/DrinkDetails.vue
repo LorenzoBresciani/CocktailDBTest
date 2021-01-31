@@ -1,29 +1,29 @@
 <template>
   <div class="body">
     <div class="firstRow">
-      <img :src="drink.strDrinkThumb"/> 
+      <img :src="drinkDetails.strDrinkThumb"/> 
       <div class="drinkInstruction">
         <div class="row"></div>
         <div class="instructionBody">
           <div class="breadcrumb">
-            <span @click="returnHome" style="cursor:pointer">Home / </span><span>{{drink.strDrink}}</span>
+            <span @click="returnHome" style="cursor:pointer">Home / </span><span>{{drinkDetails.strDrink}}</span>
           </div>
-          <h1>{{drink.strDrink}}</h1>
+          <h1>{{drinkDetails.strDrink}}</h1>
           <h2>Instructions:</h2>
           <ul>
-            <li>{{drink.strInstructions}}</li>
+            <li>{{drinkDetails.strInstructions}}</li>
           </ul>
           <h2>Glass:</h2>
-          <span>Serve: {{drink.strGlass}}</span>
+          <span>Serve: {{drinkDetails.strGlass}}</span>
         </div>
       </div>
     </div>
     <div class="secondRow">
       <div class="secondRowHeader">
-        <h3>Ingredients: ({{filterDrinkIngredients.length}})</h3>
+        <h2>Ingredients: ({{filterDrinkIngredients.length}})</h2>
       </div>
       <div class="grid-container">
-      <div v-for="(ingr, index) in filterDrinkIngredients" :key='index' class="drinkCard" @click="seeDrinkDetails(drink)">
+      <div v-for="(ingr, index) in filterDrinkIngredients" :key='index' class="drinkCard" @click="seeDrinkDetails(drinkDetails)">
           <img :src="'https://www.thecocktaildb.com/images/ingredients/' + ingr.toLowerCase() + '-Medium.png'">
           <span style="font-weight: bold;">{{filterIngredientsMeasures[index]}}</span>
         </div>
@@ -33,7 +33,7 @@
       <h2>Browse more</h2>
     </div>
     <div class="fourthRow">
-        <div v-for="cocktail in cocktailsRandomSorter" :key='cocktail.idDrink' class="previewCard" @click="seeDrinkDetails(cocktail)">
+        <div v-for="cocktail in cocktails" :key='cocktail.idDrink' class="previewCard" @click="seeDrinkDetails(cocktail)">
           <img class='previewImg' :src="cocktail.strDrinkThumb + '\/preview'" width="310" height='310'>
           <div class="caption">
             <span>{{cocktail.strDrink}}</span>
@@ -48,8 +48,19 @@
 export default {
   name: 'DrinkDetails',
   props:{
-      drink: Object,
-      cocktails: Array
+      drinkId: String,
+    },
+    data(){
+      return {
+        drinkDetails: {},
+        cocktails: []
+      }
+    },
+    mounted(){
+      this.$http.get('https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=' + this.drinkId)
+      .then(response => this.drinkDetails = response.data.drinks[0])
+
+      this.randomCocktails();
     },
   computed: {
     filterDrinkIngredients(){
@@ -58,11 +69,6 @@ export default {
     filterIngredientsMeasures(){
       return this.filterDrinkByObjProp('strMeasure')
     },
-    cocktailsRandomSorter(){
-      const otherCocktails = this.cocktails.filter(drink => drink.idDrink !== this.drink.idDrink)
-      otherCocktails.sort(() => 0.5 - Math.random())
-      return otherCocktails.slice(0,4)
-    }
   },
   methods:{
     returnHome(){
@@ -72,9 +78,8 @@ export default {
       this.$router.push({
         name: 'DrinkDetails',
          params: {
-           drinkName:drink.strDrink,
-           drink: drink,
-           cocktails: this.cocktails
+           drinkName: drink.strDrink,
+           drinkId: drink.idDrink
            }
       })
     },
@@ -82,13 +87,24 @@ export default {
     filterDrinkByObjProp(objProp){
       const drinkArr = [];
 
-      for (const [key, value] of Object.entries(this.drink)) {
+      for (const [key, value] of Object.entries(this.drinkDetails)) {
         if(key.includes(objProp))
           if(value)
             drinkArr.push(value)
       }
         return drinkArr
-    }    
+    },
+    randomCocktails(){
+      this.cocktails = [];
+      for(let i = 0; i < 4; i++)
+      {
+        this.$http.get('https://www.thecocktaildb.com/api/json/v1/1/random.php')
+          .then(response => {
+            if(!this.cocktails.find(drink => drink.idDrink === response.data.drinks[0].idDrink))
+              this.cocktails.push(response.data.drinks[0])
+          })
+      }
+    }   
   }
 }
 
@@ -140,15 +156,26 @@ span{
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   background-color:  #f5f5f5;
   margin-right: 5px;
   margin-bottom: 5px;
 }
 
+.drinkCard > img{
+  object-fit:cover;
+  max-width: 150px;
+  max-height: 150px;
+}
+
+.drinkCard > span {
+  margin-top: 46px;
+}
+
 .grid-container{
   display: grid;
   grid-template-columns: 350px 350px;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 350px 350px;
 }
 
 
@@ -166,6 +193,10 @@ span{
   height:113px;
 }
 
+.secondRowHeader > h2 {
+  margin-bottom: 0;
+}
+
 .thirdRow{
   display: flex;
   justify-content: center;
@@ -180,6 +211,7 @@ span{
   grid-template-rows: 300px;
   gap: 40px 40px;
   padding: 0 40px;
+  margin-bottom: 85px;
 }
 
 .previewCard{
