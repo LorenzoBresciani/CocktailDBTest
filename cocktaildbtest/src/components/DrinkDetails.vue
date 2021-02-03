@@ -23,9 +23,9 @@
         <h2>Ingredients: ({{filterDrinkIngredients.length}})</h2>
       </div>
       <div class="grid-container">
-      <div v-for="(ingr, index) in filterDrinkIngredients" :key='index' class="drinkCard" @click="seeDrinkDetails(drinkDetails)">
+        <div v-for="(ingr, index) in filterDrinkIngredients" :key='index' class="drinkCard" @click="seeDrinkDetails(drinkDetails)">
           <img :src="'https://www.thecocktaildb.com/images/ingredients/' + ingr.toLowerCase() + '-Medium.png'">
-          <span style="font-weight: bold;">{{filterIngredientsMeasures[index]}}</span>
+          <span style="font-weight: bold;margin-top: 48px;margin-bottom: 48px;">{{filterIngredientsMeasures[index]}}</span>
         </div>
       </div>
     </div>
@@ -156,7 +156,7 @@ span{
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   background-color:  #f5f5f5;
   margin-right: 5px;
   margin-bottom: 5px;
@@ -174,8 +174,9 @@ span{
 
 .grid-container{
   display: grid;
-  grid-template-columns: 350px 350px;
-  grid-template-rows: 350px 350px;
+  grid-template-columns: repeat(2, 350px);
+  grid-auto-rows: 350px;
+  height: 100%;
 }
 
 
@@ -184,6 +185,7 @@ span{
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
+  height: 100%;
 }
 
 .secondRowHeader{

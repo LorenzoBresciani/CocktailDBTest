@@ -18,15 +18,12 @@
         <pre><h3>Drink images: </h3></pre> {{totalImagesCounter}}
       </div>
       <div class="grid-container">
-        <div v-for="drink in cocktailsLimit" :key='drink.idDrink' class="drinkCard" @click="seeDrinkDetails(drink)">
+        <div v-for="drink in cocktails" :key='drink.idDrink' class="drinkCard" @click="seeDrinkDetails(drink)">
           <img :src="drink.strDrinkThumb + '\/preview'" width="310" height='310'>
           <div class="caption">
             <span>{{drink.strDrink}}</span>
           </div>
         </div>
-      </div>
-      <div class="gridFooterRow">
-        <button v-if="limit !== null" @click="limit = null">Load more +</button>
       </div>
     </div>
   </div>
@@ -45,7 +42,6 @@ export default {
     return{
       search: "",
       cocktails: null,
-      limit: 12
     }
   },
  mounted () {
@@ -53,14 +49,6 @@ export default {
   },
 
    computed:{
-
-     cocktailsLimit(){
-       if(this.cocktails)
-        return this.limit ? this.cocktails.slice(0,this.limit) : this.cocktails;
-
-      return [];
-     },
-
     totaDrinksCounter(){
       if(this.cocktails)
         return this.cocktails.length;
@@ -204,6 +192,7 @@ input::-webkit-input-placeholder {
   width: 100%;
   grid-template-columns: 310px 310px 310px 310px;
   grid-gap: 40px 40px;
+  margin-bottom: 85px;
 }
 
 .gridFooterRow{
